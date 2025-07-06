@@ -26,3 +26,9 @@ jobs:
           CHEF_LICENSE: accept
         run: |
           sudo -E chef-client -z -j roles/webserver.json -o 'recipe[site_webserver::default]' --why-run
+
+      - name: Debug files
+        run: |
+          ls -la roles/
+          cat roles/webserver.json
+    
