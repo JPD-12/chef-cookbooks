@@ -25,4 +25,4 @@ jobs:
         env:
           CHEF_LICENSE: accept
         run: |
-          sudo -E chef-client -z -j roles/webserver.json -o 'recipe[site_webserver::default]'
+          sudo chef-client -z -j roles/webserver.json -o 'recipe[site_webserver::default]' --why-run
