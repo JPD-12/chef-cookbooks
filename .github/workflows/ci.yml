@@ -22,5 +22,7 @@ jobs:
           curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P chefdk -v 4.13.3
 
       - name: Run Chef Client in local mode PoC
+        env:
+          CHEF_LICENSE: accept
         run: |
           sudo chef-client -z -j roles/webserver.json -o 'recipe[site_webserver::default]'
