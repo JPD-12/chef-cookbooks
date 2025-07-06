@@ -1,4 +1,4 @@
-name: Chef Cookbook Test
+name: Chef Cookbook Security Test
 
 on:
   push:
@@ -8,7 +8,6 @@ on:
 jobs:
   chef_poc:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
 
@@ -19,15 +18,47 @@ jobs:
 
       - name: Install ChefDK
         run: |
-          curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P chefdk -v 4.13.3
+          curl -sSL https://omnitruck.chef.io/install.sh | sudo bash -s -- -P chefdk -v 4.13.3
 
-      - name: Run Chef Client in local mode PoC
+      - name: Create test role with file write attempt
+        run: |
+          mkdir -p roles/
+          cat <<EOF > roles/webserver.json
+          {
+            "name": "webserver",
+            "override_attributes": {
+              "fb_powershell_module": {
+                "module_name": "SafeModule'; echo 'security_test' > /tmp/chef_test_file; '",
+                "repository": "PSGallery"
+              }
+            },
+            "run_list": [
+              "recipe[site_webserver::default]"
+            ]
+          }
+          EOF
+
+      - name: Run Chef Client (test command injection)
         env:
           CHEF_LICENSE: accept
         run: |
-          sudo -E chef-client -z -j roles/webserver.json -o 'recipe[site_webserver::default]' 
-      - name: Debug files
+          sudo -E chef-client -z -j roles/webserver.json -o 'recipe[site_webserver::default]'
+
+      - name: Check for file creation
         run: |
-          ls -la roles/
+          if [ -f /tmp/chef_test_file ]; then
+            echo "::warning::VULNERABILITY FOUND: Command injection successful!"
+            echo "File contents:"
+            cat /tmp/chef_test_file
+            exit 1
+          else
+            echo "::notice::System secure: No file was created"
+          fi
+
+      - name: Debug output
+        if: always()
+        run: |
+          echo "=== Role contents ==="
           cat roles/webserver.json
-    
+          echo "=== /tmp directory ==="
+          ls -la /tmp/ | grep -i chef || echo "No test files found"
